@@ -1,5 +1,4 @@
 # LogParserAPI
-# LogParserAPI
 API simples para o repositório do parser do log gerado pelo jogo Quake 3. Este parser lê o arquivo games.log e computa as informações de cada jogo:
   
   - Nome e quantidades de mortes para cada jogador
