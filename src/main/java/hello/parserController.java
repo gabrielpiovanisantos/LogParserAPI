@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 public class parserController {
 
+    //retorna as informações do jogo a partir do seu id exemplo: /games?game=15
     @RequestMapping("/games")
     public static Game games(@RequestParam(value="game", defaultValue="") Integer id) {
 
@@ -16,11 +17,15 @@ public class parserController {
         ArrayList<Game> games = new ArrayList<Game>();
         strs = Parser.excludeTime(strs);
 
-        games = Parser.coreMethod(strs);
 
-//        for(Game game : games){
-//            System.out.println(game.getTotalDeaths());
-//        }
+        games = Parser.coreMethod(strs);
+        for (Game game : games)
+            game.getPlayers().remove(0);
+
+
         return games.get(id);
     }
+
+
+
 }

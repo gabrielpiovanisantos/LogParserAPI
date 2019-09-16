@@ -9,7 +9,7 @@ public class Game {
 
     public Game(Integer id) {
         this.id = id;
-        this.players = new ArrayList<Player>(Collections.singletonList(new Player(1022)));
+        this.players = new ArrayList<Player>(Collections.singletonList(new Player(1022, "World")));
         this.deaths = new HashMap<>();
     }
 

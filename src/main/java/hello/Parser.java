@@ -10,7 +10,7 @@ import java.util.regex.Pattern;
 
 // o arquivo .log consiste de eventos
 //para cada evento que representa uma morte há 3 números, o primeiro é o usuairo que cometeu a morte,
-//o segundo do usuario assassinado e o terceiro é referente a como foi a morte
+//o segundo do usuario assassinado e o terceiro é referente a causa da morte
 public class Parser {
 
     //ler o arquivo e retorna um conjunto contendo as suas linhas
@@ -49,16 +49,6 @@ public class Parser {
         return retStrs;
     }
 
-    // metodo que verifica se tem mais que uma palavra, se tem, retorna a primeira, se não retorna ela mesma
-//    public static String getFirstWord(String str) {
-//        int index = str.indexOf(' ');
-//        if (index > -1) {
-//            return str.substring(0, index); // .
-//        } else {
-//            return str;
-//        }
-//    }
-
     //metodo principal
     public static ArrayList<Game> coreMethod(ArrayList<String> strs) {
         ArrayList<Game> games = new ArrayList<>();
@@ -68,8 +58,9 @@ public class Parser {
                 case "InitGame:":// instancia um novo jogo
                     games.add(new Game(games.size()));
                     break;
-                case "Death:":
+                case "Death:": // faz o processamento pra o caso de morte de jogador
                     String[] evento = words[1].trim().split(" ");
+                    int playerAtual = Integer.parseInt(evento[0]); //primeiro jogador
                     Integer causa = Integer.parseInt(evento[2].replace(":", ""));// a causa da morte
                     // se essa causa ja aconteceu, incrementa a contagem, se não, insere
                     if (games.get(games.size() - 1).getDeaths().containsKey(Mean.getById(causa))) {
@@ -77,6 +68,16 @@ public class Parser {
                                 games.get(games.size() - 1).getDeaths().get(Mean.getById(causa)) + 1);
                     } else {
                         games.get(games.size() - 1).getDeaths().put(Mean.getById(causa), 1);
+                    }
+                    if (playerAtual == 1022) { // se o primeiro valor for referente ao mundo diminui em 1 o numero de mortes do jogador morto
+                        int playerDead = Integer.parseInt(evento[1]) - 1;// jogador morte
+                        if (games.get(games.size() - 1).getPlayers().size() > playerDead)
+                            games.get(games.size() - 1).getPlayers().get(playerDead).decreaseKills();
+
+                    } else {
+                        playerAtual = playerAtual - 1;
+                        if (games.get(games.size() - 1).getPlayers().size() > playerAtual)
+                            games.get(games.size() - 1).getPlayers().get(playerAtual).increaseKills();
                     }
                     break;
                 case "ClientConnect:":// instancia um novo jogador
@@ -86,7 +87,7 @@ public class Parser {
                 case "ClientUserinfoChanged:": // atualiza o nome do jogador indicado pelo numero apos o ":"
                     evento = words[1].trim().split(" ", 2);
                     String nome = getName(evento[1]);
-                    int playerAtual = Integer.parseInt(evento[0]) - 1;
+                    playerAtual = Integer.parseInt(evento[0]) - 1;
                     if (games.get(games.size() - 1).getPlayers().size() > playerAtual)
                         games.get(games.size() - 1).getPlayers().get(playerAtual).setName(nome);
                     break;
@@ -94,7 +95,7 @@ public class Parser {
                     evento = words[1].trim().split(" ");
                     playerAtual = Integer.parseInt(evento[6]) - 1;
                     Integer killsAtual = Integer.parseInt(evento[0]);
-                    games.get(games.size()-1).getPlayers().get(playerAtual).setKills(killsAtual);
+                    games.get(games.size() - 1).getPlayers().get(playerAtual).setKills(killsAtual);
 //                    games.get(games.size()-1).playersToString();
                 default:
                     break;

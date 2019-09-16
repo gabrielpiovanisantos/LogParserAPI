@@ -10,6 +10,11 @@ public class Player {
         this.kills = 0;
     }
 
+    public Player(int i, String name) {
+        this.id = i;
+        this.name = name;
+    }
+
     public String getName() {
         return name;
     }
